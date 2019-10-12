@@ -30,7 +30,7 @@ namespace MakeJsonFile.Model
         /// <summary>
         /// 一覧表示用
         /// </summary>
-        public ObservableCollection<LineNameList> LineList = new ObservableCollection<LineNameList>();
+        public Dictionary<string, LineNameList> LineList = new Dictionary<string, LineNameList>();
 
         
         public class Stations

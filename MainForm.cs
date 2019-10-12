@@ -104,7 +104,7 @@ namespace MakeJsonFile
                 {
                     var station = new RootModel.Stations {
                         id = metroItem.id,
-                        name = metroItem.name,
+                        name = metroItem.name.Replace("大阪メトロ","").Replace("・近鉄けいはんな線", ""),
                         Color = "#FFFFFF", //白
                         score = 1,
                         //御堂筋線表示順 = row.御堂筋線表示順,
@@ -118,7 +118,7 @@ namespace MakeJsonFile
                         //今里筋線表示順 = row.今里筋線表示順,
                         groupID = metroItem.groupID,
                         lineID = metroItem.lineID,
-                        stationID = metroItem.stationID, 
+                        stationID = metroItem.stationID+1, 
                         Visible = true,
                         lineName = metroItem.lineName
                     };
@@ -142,10 +142,11 @@ namespace MakeJsonFile
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            ImporttextBox.Text = @"Z:\stations.json";
+            ImporttextBox.Text = "stations.json";
             ChangeFiletextBox.Text = @"file.json";
 
             var rootmodel = SaveLoader.Load(Settings.Default.ファイルパス);
+			
             foreach (var item in rootmodel.NotVisible)
             {
                 NotVisibletextBox.Text += item.name + "\r\n";
@@ -160,32 +161,32 @@ namespace MakeJsonFile
 
             foreach (var line in NotVisibletextBox.Lines)
             {
-                //var addName = line.Replace("\r\n", "");
+				var addName = line.Replace("\r\n", "");
 
-                /////visible
-                //var checkName = listMaster. .Where(q => q.name == addName).FirstOrDefault();
-                //if (checkName != null)
-                //{
-                //    checkName.Visible = false;
-                //}
+				///visible
+				var checkName = listMaster.StationFirebaseOnlyList.Where(q => q.Value.name == addName).FirstOrDefault();
+				if (checkName.Key != null)
+				{
+					checkName.Value.Visible = false;
+				}
 
-                /////非表示リスト追加
-                //var current = listMaster.NotVisible.Where(q => q.name == addName).FirstOrDefault();
-                //if (current == null)
-                //{
-                //    list.Add(
-                //        new RootModel.NotVisibles
-                //        {
-                //            name = addName,
-                            
-                //        }
-                //    );
-                //}
+				///非表示リスト追加
+				var current = listMaster.NotVisible.Where(q => q.name == addName).FirstOrDefault();
+				if (current == null)
+				{
+					list.Add(
+						new RootModel.NotVisibles
+						{
+							name = addName,
 
-               
-                
-                
-            }
+						}
+					);
+				}
+
+
+
+
+			}
             listMaster.NotVisible = list;
 
             SaveLoader.Save(listMaster, Settings.Default.ファイルパス);
@@ -197,20 +198,30 @@ namespace MakeJsonFile
             Settings.Default.Save();
         }
 
+		/// <summary>
+		/// LineIDを振る
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
         private void button1_Click(object sender, EventArgs e)
         {
             var rootmodel = SaveLoader.Load(Settings.Default.ファイルパス);
 
             foreach (var item in rootmodel.StationFirebaseOnlyList)
             {
-                if (rootmodel.LineList.Where(q=>q.LineID == item.Value.lineID.ToString()).Count()>0)
+                if (rootmodel.LineList.Where(q=>q.Key == item.Value.lineID.ToString()).Count()>0)
                 {
                     continue;
                 }
-                rootmodel.LineList.Add(new RootModel.LineNameList {
-                    LineID = item.Value.lineID.ToString(),
-                    LineName = item.Value.lineName.ToString(),
+
+                rootmodel.LineList.Add(
+					item.Value.lineID.ToString(),
+					new RootModel.LineNameList {
+						LineID = item.Value.lineID.ToString(),
+						LineName = item.Value.lineName.ToString(),
                 });
+				
+				
             }
             SaveLoader.Save(rootmodel, Settings.Default.ファイルパス);
 
