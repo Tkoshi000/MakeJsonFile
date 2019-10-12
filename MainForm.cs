@@ -105,7 +105,7 @@ namespace MakeJsonFile
                     var station = new RootModel.Stations {
                         id = metroItem.id,
                         name = metroItem.name.Replace("大阪メトロ","").Replace("・近鉄けいはんな線", ""),
-                        Color = "#FFFFFF", //白
+                        Color = "white", //白
                         score = 1,
                         //御堂筋線表示順 = row.御堂筋線表示順,
                         //谷町線表示順 = row.谷町線表示順,
