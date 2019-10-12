@@ -104,7 +104,7 @@ namespace MakeJsonFile
                 {
                     var station = new RootModel.Stations {
                         id = metroItem.id,
-                        name = metroItem.name.Replace("大阪メトロ","").Replace("・近鉄けいはんな線", ""),
+                        name = metroItem.name,
                         Color = "white", //白
                         score = 1,
                         //御堂筋線表示順 = row.御堂筋線表示順,
@@ -120,8 +120,8 @@ namespace MakeJsonFile
                         lineID = metroItem.lineID,
                         stationID = metroItem.stationID+1, 
                         Visible = true,
-                        lineName = metroItem.lineName
-                    };
+                        lineName = metroItem.lineName.Replace("大阪メトロ", "").Replace("・近鉄けいはんな線", "")
+					};
 
                     Newrootmodel.Add(PrimaryKey, station);
                 }
@@ -158,8 +158,9 @@ namespace MakeJsonFile
         {
             var list = new ObservableCollection<RootModel.NotVisibles>();
             var listMaster = SaveLoader.Load(ChangeFiletextBox.Text);
+			listMaster.NotVisible.Clear();
 
-            foreach (var line in NotVisibletextBox.Lines)
+			foreach (var line in NotVisibletextBox.Lines)
             {
 				var addName = line.Replace("\r\n", "");
 
